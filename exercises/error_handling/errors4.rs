@@ -17,7 +17,12 @@ enum CreationError {
 impl PositiveNonzeroInteger {
     fn new(value: i64) -> Result<PositiveNonzeroInteger, CreationError> {
         // Hmm... Why is this always returning an Ok value?
-        Ok(PositiveNonzeroInteger(value as u64))
+        use std::cmp::Ordering;
+        match value.cmp(&0) {
+            Ordering::Greater => Ok(PositiveNonzeroInteger(value as u64)),
+            Ordering::Equal => Err(CreationError::Zero),
+            Ordering::Less => Err(CreationError::Negative),
+        }
     }
 }
 
